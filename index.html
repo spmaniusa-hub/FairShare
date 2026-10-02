@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FairShare - Trip Cost Splitter for Linda, Dave & Carol</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Main Header -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-icon">$</div>
+          <div>
+            <h1>FairShare</h1>
+            <span class="header-badge">Careful Bookkeeper Edition</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="tests.html" class="btn-header-link" title="Open unit verification tests">
+            <span>&check;</span> Verification Tests
+          </a>
+        </div>
+      </div>
+      <p class="subtitle">Equal trip cost splitting for Linda, Dave, and Carol with whole-cent accounting.</p>
+      <div class="participants-tagline">
+        <span>Trip Members:</span>
+        <span class="participant-chip">1. Linda</span>
+        <span class="participant-chip">2. Dave</span>
+        <span class="participant-chip">3. Carol</span>
+        <span style="margin-left: 8px; font-size: 15px; color: var(--text-muted);">(Leftover cents go to the first listed)</span>
+      </div>
+    </header>
+
+    <!-- Balances Overview ("Who owes and who gets back") -->
+    <section class="card" aria-labelledby="balances-heading">
+      <div class="card-title">
+        <h2 id="balances-heading" style="font-size: 22px; font-weight: 700;">Who Owes &amp; Who Gets Back</h2>
+        <span class="card-subtitle" id="trip-total-summary">Trip Total: $0.00</span>
+      </div>
+      <div class="balances-grid" id="balances-container" aria-live="polite">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- Settlement Plan ("How to Settle Up") -->
+    <section class="card settlement-card" aria-labelledby="settlement-heading">
+      <div class="card-title">
+        <h2 id="settlement-heading" style="font-size: 22px; font-weight: 700;">Settlement Plan</h2>
+        <span class="card-subtitle">Simplest payments to square all debts</span>
+      </div>
+      <div class="settlement-list" id="settlement-list">
+        <!-- Rendered by app.js -->
+      </div>
+      <div class="settlement-footer" id="settlement-footer" style="display: none;">
+        <button type="button" class="btn-secondary" id="btn-copy-settlement">
+          📋 Copy Settlement Summary
+        </button>
+      </div>
+    </section>
+
+    <!-- Add Expense Form -->
+    <section class="card" aria-labelledby="add-expense-heading">
+      <div class="card-title">
+        <h2 id="add-expense-heading" style="font-size: 22px; font-weight: 700;">Record an Expense</h2>
+        <span class="card-subtitle">Split equally 3 ways</span>
+      </div>
+
+      <form id="expense-form" novalidate>
+        <div class="form-grid">
+          <!-- Description -->
+          <div class="form-group">
+            <label for="expense-what">What was paid for?</label>
+            <input type="text" id="expense-what" placeholder="e.g. Dinner, Gas, Groceries" required autocomplete="off">
+          </div>
+
+          <!-- Amount -->
+          <div class="form-group">
+            <label for="expense-amount">How much?</label>
+            <div class="amount-input-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="text" id="expense-amount" placeholder="100.00" inputmode="decimal" required autocomplete="off">
+            </div>
+          </div>
+
+          <!-- Paid By -->
+          <div class="form-group">
+            <label for="expense-paidby">Who paid?</label>
+            <select id="expense-paidby" required>
+              <option value="Linda">Linda</option>
+              <option value="Dave">Dave</option>
+              <option value="Carol">Carol</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-group">
+            <button type="submit" class="btn-primary" id="btn-add-expense">
+              + Add Expense
+            </button>
+          </div>
+        </div>
+
+        <div id="form-error" class="error-banner" role="alert"></div>
+
+        <!-- Quick Demo Presets -->
+        <div class="presets-bar">
+          <span class="presets-label">Quick Examples:</span>
+          <button type="button" class="btn-preset" data-what="Dinner" data-amount="100.00" data-paidby="Linda">
+            + $100 Dinner (Linda)
+          </button>
+          <button type="button" class="btn-preset" data-what="Gas" data-amount="45.00" data-paidby="Dave">
+            + $45 Gas (Dave)
+          </button>
+          <button type="button" class="btn-preset" data-what="Groceries" data-amount="75.00" data-paidby="Carol">
+            + $75 Groceries (Carol)
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Expense Ledger Table -->
+    <section class="card" aria-labelledby="ledger-heading">
+      <div class="card-title">
+        <h2 id="ledger-heading" style="font-size: 22px; font-weight: 700;">Expense Ledger</h2>
+        <span class="card-subtitle" id="ledger-count-label">0 expenses recorded</span>
+      </div>
+
+      <div class="ledger-table-wrapper">
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 28%;">What</th>
+              <th scope="col" style="width: 16%;">Paid By</th>
+              <th scope="col" style="width: 16%;">Amount</th>
+              <th scope="col" style="width: 32%;">3-Way Split Breakdown</th>
+              <th scope="col" style="width: 8%; text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-body">
+            <!-- Rendered by app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ledger-footer" id="ledger-footer">
+        <div class="total-stat">
+          Total Trip Cost: <span class="total-amount-highlight" id="footer-total-amount">$0.00</span>
+        </div>
+        <button type="button" class="btn-clear" id="btn-clear-all">
+          Clear All Expenses
+        </button>
+      </div>
+    </section>
+
+    <!-- Bookkeeper Note Card -->
+    <div class="card note-card">
+      <div class="note-header">
+        <span>📖</span>
+        <span>The Bookkeeper's Rule on Leftover Cents</span>
+      </div>
+      <p class="note-text">
+        Every expense is divided in whole cents. When an amount cannot be divided into three equal integer cents (such as a <strong>$100.00</strong> dinner, where 10,000&cent; &divide; 3 = 3,333&cent; with <strong>1 leftover cent</strong>), the leftover cents are assigned to the participants in roster order: <strong>Linda</strong>, then <strong>Dave</strong>, then <strong>Carol</strong>.
+        <br>
+        For instance, a <strong>$100 dinner paid by Linda</strong> splits <strong>$33.34</strong> to Linda, <strong>$33.33</strong> to Dave, and <strong>$33.33</strong> to Carol. Because Linda paid $100.00, she <strong>gets back $66.66</strong> ($100.00 &minus; $33.34), while Dave and Carol each <strong>owe $33.33</strong>. Every single cent is strictly accounted for.
+      </p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="money.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

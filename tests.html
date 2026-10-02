@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FairShare - Bookkeeper Verification Tests</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #cbd5e1;
+      --primary: #1e3a8a;
+      --success: #15803d;
+      --success-bg: #ecfdf5;
+      --success-border: #86efac;
+      --fail: #b91c1c;
+      --fail-bg: #fef2f2;
+      --fail-border: #fca5a5;
+      --code-bg: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 19px;
+      line-height: 1.6;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 32px 20px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .nav-link {
+      display: inline-block;
+      margin-bottom: 12px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 19px;
+      color: var(--text-muted);
+    }
+
+    .status-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 20px 24px;
+      border-radius: 12px;
+      margin-bottom: 28px;
+      font-weight: 700;
+      font-size: 22px;
+    }
+    .status-banner.all-pass {
+      background: var(--success-bg);
+      border: 2px solid var(--success-border);
+      color: var(--success);
+    }
+    .status-banner.has-fail {
+      background: var(--fail-bg);
+      border: 2px solid var(--fail-border);
+      color: var(--fail);
+    }
+
+    .btn-rerun {
+      background: #ffffff;
+      border: 2px solid currentColor;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-rerun:hover {
+      background: rgba(0,0,0,0.04);
+    }
+
+    .suite-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .suite-header {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .test-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 18px;
+    }
+    .test-item:last-child {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+      font-family: ui-monospace, "SF Mono", monospace;
+    }
+    .badge-pass {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .badge-fail {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .test-details {
+      flex: 1;
+    }
+    .test-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .test-desc {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-top: 3px;
+    }
+    .test-error {
+      margin-top: 8px;
+      padding: 10px;
+      background: #fef2f2;
+      border-left: 4px solid var(--fail);
+      color: var(--fail);
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 15px;
+      border-radius: 4px;
+    }
+
+    .math-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 10px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .highlight-pass {
+      color: var(--success);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="index.html" class="nav-link">&larr; Back to FairShare App</a>
+      <h1>FairShare Verification Suite</h1>
+      <p class="subtitle">Automated tests verifying whole-cent money math, leftover cent distribution, and exact settlement reconciliation.</p>
+    </header>
+
+    <div id="status-banner" class="status-banner">
+      <span id="summary-text">Running tests...</span>
+      <button class="btn-rerun" onclick="runAllTests()">Re-run Tests</button>
+    </div>
+
+    <div id="test-results"></div>
+  </div>
+
+  <!-- Load pure money math -->
+  <script src="money.js"></script>
+
+  <script>
+    const testSuites = [];
+
+    function suite(name, fn) {
+      testSuites.push({ name, fn });
+    }
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message || 'Assertion failed');
+      }
+    }
+
+    function assertEqual(actual, expected, message) {
+      if (actual !== expected) {
+        throw new Error(`${message || 'Failed'}: Expected [${expected}] but got [${actual}]`);
+      }
+    }
+
+    function assertDeepEqual(actual, expected, message) {
+      const a = JSON.stringify(actual);
+      const e = JSON.stringify(expected);
+      if (a !== e) {
+        throw new Error(`${message || 'Failed'}: Expected ${e} but got ${a}`);
+      }
+    }
+
+    // --- TEST SUITE DEFINITIONS ---
+
+    suite('Primary Requirement: $100 Split 3 Ways Adds to Exactly $100.00', (add) => {
+      add('Splits $100 into [3334, 3333, 3333] cents', () => {
+        const totalCents = MoneyMath.dollarsToCents('100');
+        assertEqual(totalCents, 10000, '$100 converts to 10000 cents');
+
+        const shares = MoneyMath.splitCents(totalCents, 3);
+        assertDeepEqual(shares, [3334, 3333, 3333], 'Shares array matches [3334, 3333, 3333]');
+      });
+
+      add('Formatted shares are exactly $33.34, $33.33, $33.33', () => {
+        const shares = MoneyMath.splitCents(10000, 3);
+        const formatted = shares.map(c => MoneyMath.centsToDollars(c));
+        assertDeepEqual(formatted, ['$33.34', '$33.33', '$33.33'], 'Formatted shares are correct');
+      });
+
+      add('Shares add up to exactly $100.00 (10000 cents)', () => {
+        const shares = MoneyMath.splitCents(10000, 3);
+        const sumCents = shares.reduce((sum, val) => sum + val, 0);
+        assertEqual(sumCents, 10000, 'Sum of cents equals 10000 cents');
+        assertEqual(MoneyMath.centsToDollars(sumCents), '$100.00', 'Sum in dollars equals $100.00');
+      });
+
+      add('Linda paid $100 dinner: Linda gets back $66.66, Dave owes $33.33, Carol owes $33.33', () => {
+        const expenses = [
+          { id: 'exp-1', what: 'Dinner', amountCents: 10000, paidBy: 'Linda' }
+        ];
+        const ledger = MoneyMath.calculateLedger(expenses, ['Linda', 'Dave', 'Carol']);
+
+        const linda = ledger.balancesByName['Linda'];
+        const dave = ledger.balancesByName['Dave'];
+        const carol = ledger.balancesByName['Carol'];
+
+        assertEqual(linda.paidCents, 10000, 'Linda paid $100.00');
+        assertEqual(linda.shareCents, 3334, 'Linda share is $33.34');
+        assertEqual(linda.netCents, 6666, 'Linda net is +$66.66');
+        assertEqual(linda.status, 'gets_back', 'Linda status is gets_back');
+        assertEqual(MoneyMath.centsToDollars(linda.netCents), '$66.66', 'Linda gets back formatted as $66.66');
+
+        assertEqual(dave.paidCents, 0, 'Dave paid $0.00');
+        assertEqual(dave.shareCents, 3333, 'Dave share is $33.33');
+        assertEqual(dave.netCents, -3333, 'Dave net is -$33.33');
+        assertEqual(dave.status, 'owes', 'Dave status is owes');
+        assertEqual(MoneyMath.centsToDollars(dave.netCents), '-$33.33', 'Dave owes formatted as -$33.33');
+
+        assertEqual(carol.paidCents, 0, 'Carol paid $0.00');
+        assertEqual(carol.shareCents, 3333, 'Carol share is $33.33');
+        assertEqual(carol.netCents, -3333, 'Carol net is -$33.33');
+        assertEqual(carol.status, 'owes', 'Carol status is owes');
+        assertEqual(MoneyMath.centsToDollars(carol.netCents), '-$33.33', 'Carol owes formatted as -$33.33');
+      });
+
+      add('Zero-sum invariant: Net balances sum to exactly $0.00', () => {
+        const expenses = [
+          { id: 'exp-1', what: 'Dinner', amountCents: 10000, paidBy: 'Linda' }
+        ];
+        const ledger = MoneyMath.calculateLedger(expenses, ['Linda', 'Dave', 'Carol']);
+        const netSum = ledger.balances.reduce((sum, b) => sum + b.netCents, 0);
+        assertEqual(netSum, 0, 'Sum of all net balances is strictly 0 cents');
+      });
+
+      add('Settlement transactions: Dave pays Linda $33.33 and Carol pays Linda $33.33', () => {
+        const expenses = [
+          { id: 'exp-1', what: 'Dinner', amountCents: 10000, paidBy: 'Linda' }
+        ];
+        const ledger = MoneyMath.calculateLedger(expenses, ['Linda', 'Dave', 'Carol']);
+        assertEqual(ledger.settlements.length, 2, 'Two settlement payments needed');
+
+        const p1 = ledger.settlements[0];
+        const p2 = ledger.settlements[1];
+
+        assertEqual(p1.from, 'Dave');
+        assertEqual(p1.to, 'Linda');
+        assertEqual(p1.amountCents, 3333);
+
+        assertEqual(p2.from, 'Carol');
+        assertEqual(p2.to, 'Linda');
+        assertEqual(p2.amountCents, 3333);
+      });
+    });
+
+    suite('Leftover Cent Distribution Rules', (add) => {
+      add('Remainder = 1: Leftover cent goes to the first person (Linda)', () => {
+        const shares = MoneyMath.splitExpense(10000, ['Linda', 'Dave', 'Carol']);
+        assertEqual(shares['Linda'], 3334, 'Linda receives the 1 leftover cent');
+        assertEqual(shares['Dave'], 3333, 'Dave receives base share');
+        assertEqual(shares['Carol'], 3333, 'Carol receives base share');
+      });
+
+      add('Remainder = 2: Leftover cents go to Linda and Dave ($10.01 split 3 ways)', () => {
+        // 1001 cents / 3 = 333 remainder 2
+        const shares = MoneyMath.splitExpense(1001, ['Linda', 'Dave', 'Carol']);
+        assertEqual(shares['Linda'], 334, 'Linda receives 334 cents ($3.34)');
+        assertEqual(shares['Dave'], 334, 'Dave receives 334 cents ($3.34)');
+        assertEqual(shares['Carol'], 333, 'Carol receives 333 cents ($3.33)');
+        assertEqual(shares['Linda'] + shares['Dave'] + shares['Carol'], 1001, 'Sum is exactly 1001 cents ($10.01)');
+      });
+
+      add('Remainder = 0: Perfectly even split with zero leftover cents ($90.00 split 3 ways)', () => {
+        const shares = MoneyMath.splitExpense(9000, ['Linda', 'Dave', 'Carol']);
+        assertEqual(shares['Linda'], 3000, 'Linda receives 3000 cents ($30.00)');
+        assertEqual(shares['Dave'], 3000, 'Dave receives 3000 cents ($30.00)');
+        assertEqual(shares['Carol'], 3000, 'Carol receives 3000 cents ($30.00)');
+        assertEqual(shares['Linda'] + shares['Dave'] + shares['Carol'], 9000, 'Sum is exactly 9000 cents');
+      });
+    });
+
+    suite('Currency Input Parsing & Validation', (add) => {
+      add('Parses whole numbers ("100", "$100")', () => {
+        assertEqual(MoneyMath.dollarsToCents('100'), 10000);
+        assertEqual(MoneyMath.dollarsToCents('$100'), 10000);
+        assertEqual(MoneyMath.dollarsToCents(100), 10000);
+      });
+
+      add('Parses 2 decimal places ("100.50", "33.34")', () => {
+        assertEqual(MoneyMath.dollarsToCents('100.50'), 10050);
+        assertEqual(MoneyMath.dollarsToCents('33.34'), 3334);
+      });
+
+      add('Parses 1 decimal place ("100.5" -> 10050 cents)', () => {
+        assertEqual(MoneyMath.dollarsToCents('100.5'), 10050);
+      });
+
+      add('Parses small amounts ("0.05" -> 5 cents, "0.99" -> 99 cents)', () => {
+        assertEqual(MoneyMath.dollarsToCents('0.05'), 5);
+        assertEqual(MoneyMath.dollarsToCents('0.99'), 99);
+      });
+
+      add('Parses amounts with commas ("1,250.75" -> 125075 cents)', () => {
+        assertEqual(MoneyMath.dollarsToCents('1,250.75'), 125075);
+      });
+
+      add('Rejects zero, negative, or invalid amounts', () => {
+        let threw = false;
+        try { MoneyMath.dollarsToCents('0'); } catch(e) { threw = true; }
+        assert(threw, 'Rejected 0');
+
+        threw = false;
+        try { MoneyMath.dollarsToCents('-50'); } catch(e) { threw = true; }
+        assert(threw, 'Rejected negative number');
+
+        threw = false;
+        try { MoneyMath.dollarsToCents('abc'); } catch(e) { threw = true; }
+        assert(threw, 'Rejected letters');
+
+        threw = false;
+        try { MoneyMath.dollarsToCents(''); } catch(e) { threw = true; }
+        assert(threw, 'Rejected empty string');
+      });
+    });
+
+    suite('Multi-Expense Trip Reconciliation', (add) => {
+      add('Reconciles 3 separate expenses across Linda, Dave, and Carol', () => {
+        // Linda pays $100 dinner (3334, 3333, 3333)
+        // Dave pays $45 gas (1500, 1500, 1500)
+        // Carol pays $75 groceries (2500, 2500, 2500)
+        // Total = $220.00
+        const expenses = [
+          { id: '1', what: 'Dinner', amountCents: 10000, paidBy: 'Linda' },
+          { id: '2', what: 'Gas', amountCents: 4500, paidBy: 'Dave' },
+          { id: '3', what: 'Groceries', amountCents: 7500, paidBy: 'Carol' }
+        ];
+
+        const ledger = MoneyMath.calculateLedger(expenses, ['Linda', 'Dave', 'Carol']);
+        assertEqual(ledger.totalTripCents, 22000, 'Trip total is $220.00');
+
+        // Linda: paid 10000, share = 3334 + 1500 + 2500 = 7334 -> net = +2666 (gets back $26.66)
+        // Dave: paid 4500, share = 3333 + 1500 + 2500 = 7333 -> net = -2833 (owes $28.33)
+        // Carol: paid 7500, share = 3333 + 1500 + 2500 = 7333 -> net = +167 (gets back $1.67)
+        const l = ledger.balancesByName['Linda'];
+        const d = ledger.balancesByName['Dave'];
+        const c = ledger.balancesByName['Carol'];
+
+        assertEqual(l.netCents, 2666, 'Linda net is +$26.66');
+        assertEqual(d.netCents, -2833, 'Dave net is -$28.33');
+        assertEqual(c.netCents, 167, 'Carol net is +$1.67');
+
+        // Sum of nets: +2666 - 2833 + 167 = 0
+        assertEqual(l.netCents + d.netCents + c.netCents, 0, 'Net balances balance to 0');
+
+        // Dave owes 2833. Pays Linda 2666 and Carol 167.
+        assertEqual(ledger.settlements.length, 2);
+        assertEqual(ledger.settlements[0].from, 'Dave');
+        assertEqual(ledger.settlements[0].to, 'Linda');
+        assertEqual(ledger.settlements[0].amountCents, 2666);
+
+        assertEqual(ledger.settlements[1].from, 'Dave');
+        assertEqual(ledger.settlements[1].to, 'Carol');
+        assertEqual(ledger.settlements[1].amountCents, 167);
+      });
+    });
+
+    // --- TEST RUNNER ---
+
+    function runAllTests() {
+      const resultsContainer = document.getElementById('test-results');
+      const statusBanner = document.getElementById('status-banner');
+      const summaryText = document.getElementById('summary-text');
+
+      resultsContainer.innerHTML = '';
+
+      let totalTests = 0;
+      let passedTests = 0;
+      let failedTests = 0;
+
+      for (const s of testSuites) {
+        const suiteCard = document.createElement('div');
+        suiteCard.className = 'suite-card';
+
+        const suiteHeader = document.createElement('div');
+        suiteHeader.className = 'suite-header';
+        suiteHeader.innerHTML = `<span>${s.name}</span>`;
+        suiteCard.appendChild(suiteHeader);
+
+        const tests = [];
+        s.fn((testName, fn) => {
+          tests.push({ testName, fn });
+        });
+
+        for (const t of tests) {
+          totalTests++;
+          const item = document.createElement('div');
+          item.className = 'test-item';
+
+          let passed = false;
+          let errorMsg = '';
+
+          try {
+            t.fn();
+            passed = true;
+            passedTests++;
+          } catch (err) {
+            passed = false;
+            failedTests++;
+            errorMsg = err.message || String(err);
+          }
+
+          const badge = document.createElement('span');
+          badge.className = `badge ${passed ? 'badge-pass' : 'badge-fail'}`;
+          badge.textContent = passed ? 'PASS' : 'FAIL';
+
+          const details = document.createElement('div');
+          details.className = 'test-details';
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'test-name';
+          nameEl.textContent = t.testName;
+          details.appendChild(nameEl);
+
+          if (!passed) {
+            const errEl = document.createElement('div');
+            errEl.className = 'test-error';
+            errEl.textContent = errorMsg;
+            details.appendChild(errEl);
+          }
+
+          // Special highlight for the primary prompt requirement
+          if (t.testName.includes('Shares add up to exactly $100.00')) {
+            const mathBox = document.createElement('div');
+            mathBox.className = 'math-box';
+            mathBox.innerHTML = `
+              <strong>Primary Prompt Check:</strong><br>
+              Linda's share: $33.34 (3,334¢)<br>
+              Dave's share: &nbsp;$33.33 (3,333¢)<br>
+              Carol's share: $33.33 (3,333¢)<br>
+              ----------------------------------<br>
+              Total Sum: &nbsp; &nbsp; <span class="highlight-pass">$100.00 (10,000¢) &check; Exact Match</span>
+            `;
+            details.appendChild(mathBox);
+          }
+
+          item.appendChild(badge);
+          item.appendChild(details);
+          suiteCard.appendChild(item);
+        }
+
+        resultsContainer.appendChild(suiteCard);
+      }
+
+      if (failedTests === 0) {
+        statusBanner.className = 'status-banner all-pass';
+        summaryText.innerHTML = `&check; All ${passedTests} Tests Passed! ($100 split 3 ways adds up to exactly $100.00)`;
+      } else {
+        statusBanner.className = 'status-banner has-fail';
+        summaryText.textContent = `&cross; ${failedTests} of ${totalTests} Tests Failed`;
+      }
+    }
+
+    // Run automatically on page load
+    window.addEventListener('DOMContentLoaded', runAllTests);
+  </script>
+</body>
+</html>

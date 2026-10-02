@@ -1,0 +1,742 @@
+/* ==========================================================================
+   FairShare - style.css
+   Careful Bookkeeper Ledger Theme
+   Optimized for offline use, large text, high contrast, and clean layout
+   ========================================================================== */
+
+:root {
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  /* Colors */
+  --bg-page: #f6f8fa;
+  --card-bg: #ffffff;
+  --card-border: #d0d7de;
+  --card-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --text-light: #6b7280;
+
+  --primary: #1e3a8a;
+  --primary-hover: #172554;
+  --primary-light: #eff6ff;
+
+  --credit-text: #14532d;
+  --credit-bg: #dcfce7;
+  --credit-border: #86efac;
+
+  --debt-text: #7f1d1d;
+  --debt-bg: #fee2e2;
+  --debt-border: #fca5a5;
+
+  --neutral-text: #374151;
+  --neutral-bg: #f3f4f6;
+  --neutral-border: #d1d5db;
+
+  --accent-gold: #b45309;
+  --accent-gold-bg: #fef3c7;
+
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 6px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--text-main);
+  background-color: var(--bg-page);
+  padding: 24px 16px 64px 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+.app-header {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--primary);
+  color: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.header-badge {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 6px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-header-link {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  background: var(--primary-light);
+  border: 1px solid #bfdbfe;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-header-link:hover {
+  background: #dbeafe;
+}
+
+.subtitle {
+  font-size: 19px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.participants-tagline {
+  font-size: 17px;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.participant-chip {
+  background: var(--neutral-bg);
+  border: 1px solid var(--neutral-border);
+  padding: 2px 10px;
+  border-radius: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Cards & Layout
+   -------------------------------------------------------------------------- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--card-shadow);
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--neutral-bg);
+  padding-bottom: 12px;
+}
+
+.card-subtitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Balance Cards Grid ("Who Owes & Who Gets Back")
+   -------------------------------------------------------------------------- */
+.balances-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.balance-card {
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.balance-card.status-gets_back {
+  border-color: var(--credit-border);
+  background: #fafffc;
+}
+
+.balance-card.status-owes {
+  border-color: var(--debt-border);
+  background: #fffdfd;
+}
+
+.balance-card.status-settled {
+  border-color: var(--neutral-border);
+  background: #fafafa;
+}
+
+.person-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.person-name {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.balance-badge {
+  font-size: 15px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.badge-credit {
+  background: var(--credit-bg);
+  color: var(--credit-text);
+  border: 1px solid var(--credit-border);
+}
+
+.badge-debt {
+  background: var(--debt-bg);
+  color: var(--debt-text);
+  border: 1px solid var(--debt-border);
+}
+
+.badge-settled {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+  border: 1px solid var(--neutral-border);
+}
+
+.net-amount {
+  font-size: 32px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  line-height: 1.1;
+  margin: 6px 0;
+}
+
+.amount-credit {
+  color: var(--credit-text);
+}
+
+.amount-debt {
+  color: var(--debt-text);
+}
+
+.amount-settled {
+  color: var(--text-light);
+}
+
+.balance-breakdown {
+  font-size: 16px;
+  color: var(--text-muted);
+  border-top: 1px dashed var(--card-border);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.breakdown-val {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* --------------------------------------------------------------------------
+   Settlement Plan ("How to Settle Up")
+   -------------------------------------------------------------------------- */
+.settlement-card {
+  border-left: 6px solid var(--primary);
+}
+
+.settlement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.settlement-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--primary-light);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius-md);
+  font-size: 20px;
+}
+
+.settlement-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.settlement-debtor {
+  color: var(--debt-text);
+  font-weight: 700;
+}
+
+.settlement-creditor {
+  color: var(--credit-text);
+  font-weight: 700;
+}
+
+.settlement-amount {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.settlement-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--credit-text);
+  background: var(--credit-bg);
+  border: 1px solid var(--credit-border);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.settlement-footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-secondary {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--neutral-bg);
+  border-color: #9ca3af;
+}
+
+/* --------------------------------------------------------------------------
+   Add Expense Form
+   -------------------------------------------------------------------------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.5fr auto;
+  gap: 14px;
+  align-items: flex-end;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+input[type="text"],
+select {
+  font-size: 19px;
+  font-family: var(--font-main);
+  padding: 12px 14px;
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+input[type="text"]:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+}
+
+.amount-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 14px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.amount-input-wrapper input {
+  padding-left: 32px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.btn-primary {
+  font-size: 19px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--primary);
+  border: none;
+  padding: 13px 24px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+  height: 52px;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+/* Quick Fill Presets */
+.presets-bar {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--neutral-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.presets-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.btn-preset {
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--neutral-bg);
+  color: var(--text-main);
+  border: 1px solid var(--neutral-border);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-preset:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.error-banner {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--debt-bg);
+  border: 1px solid var(--debt-border);
+  color: var(--debt-text);
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 600;
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Expense Ledger Table
+   -------------------------------------------------------------------------- */
+.ledger-table-wrapper {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+
+.ledger-table th {
+  text-align: left;
+  padding: 12px 14px;
+  background: var(--neutral-bg);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--card-border);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ledger-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--card-border);
+  vertical-align: middle;
+}
+
+.ledger-table tr:hover td {
+  background-color: #f9fafb;
+}
+
+.col-what {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.col-paidby {
+  font-weight: 600;
+}
+
+.col-amount {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.col-split {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.split-pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+}
+
+.split-pill.remainder-holder {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  font-weight: 700;
+}
+
+.col-action {
+  text-align: right;
+}
+
+.btn-delete {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #9ca3af;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.btn-delete:hover {
+  background: var(--debt-bg);
+  color: var(--debt-text);
+  border-color: var(--debt-border);
+}
+
+.empty-ledger {
+  text-align: center;
+  padding: 36px 16px;
+  color: var(--text-light);
+  font-size: 19px;
+}
+
+.ledger-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 2px solid var(--card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.total-stat {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.total-amount-highlight {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.btn-clear {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--debt-text);
+  background: transparent;
+  border: 1px solid var(--debt-border);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-clear:hover {
+  background: var(--debt-bg);
+}
+
+/* --------------------------------------------------------------------------
+   Bookkeeper Note Card
+   -------------------------------------------------------------------------- */
+.note-card {
+  background: #fdfbf7;
+  border: 1px solid #e7dfd5;
+}
+
+.note-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 8px;
+}
+
+.note-text {
+  font-size: 17px;
+  color: #451a03;
+  line-height: 1.6;
+}
+
+.note-text strong {
+  color: #78350f;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Adjustments
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  body {
+    padding: 16px 10px 48px 10px;
+    font-size: 18px;
+  }
+
+  .balances-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
+
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
