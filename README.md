@@ -3,26 +3,49 @@
 **Author:** Mani Subramanian  
 **Course:** Vibe Coding Workshop · Day 2: Core Prompting Concepts & Tools  
 **Assignment:** Session 2 Homework — The Treasurer's Inbox: Bank Alert Import  
-**Submission Package:** `subramanian_s2_hw1.zip`
+**Submission Package:** `subramanian_s2_hw1.zip`  
+**Quick Links:** [User Guide & Walkthrough](./USER_GUIDE.md) | [Prompts Log](./PROMPTS.md) | [Automated Tests](./tests.html)
 
 ---
 
-## 1. How to Try It
+## 1. Project Overview & Verification Screenshots
 
-FairShare is built in plain HTML, CSS, and modern vanilla JavaScript. No package managers, build steps, or server setups are required.
+FairShare is a whole-cent expense sharing web application for Linda, Dave, Carol, and Ray. It solves two major pain points:
+1. **The Rounding & Leftover Cent Problem:** Ensures every single cent of an expense split is strictly accounted for without floating-point errors.
+2. **The Treasurer's Inbox:** Automatically imports casual text messages and credit union SMS bank alerts into the ledger, matching card ending digits to members, ignoring secondary balances, handling comma thousands, and safely routing awkward or unreadable lines to a "Needs review" list.
+
+### Verification Screenshots
+
+#### Live Import Preview & Needs Review Box
+![Live Import Preview](./import_preview.png)
+*Figure 1: Live import preview showing mixed text messages and bank alerts parsed into structured expenses, count & total badges, and the dedicated Needs Review alert box.*
+
+#### All 22 Verification Tests Passing (Green)
+![Tests Passing Green](./tests_green.png)
+*Figure 2: The FairShare verification suite running all 22 tests green (15 baseline tests + 7 card alert specification checks).*
+
+#### TDD Red Checkpoint (Tests Before Code)
+![Tests Failing Red](./tests_red.png)
+*Figure 3: Initial test run showing the 6 new card alert checks failing before importer.js was modified.*
+
+---
+
+## 2. How to Try It
+
+FairShare is built with plain HTML, CSS, and modern vanilla JavaScript. No package managers, build steps, or server setups are required.
 
 ### A. Run the Verification Tests
-1. Double-click `fairshare/tests.html` in your file browser (or open it in Chrome, Safari, Firefox, or Edge).
+1. Double-click `tests.html` in your file browser (or open it in Chrome, Safari, Firefox, or Edge).
 2. Alternatively, run the test suite via Node.js in your terminal:
    ```bash
-   node fairshare/tests.js
+   node tests.js
    ```
 3. **Result:** You will see all 22 verification checks passing (15 baseline tests from Session 2 + 7 new card-alert specification tests).
 
 ### B. Try the Web Application & Live Importer
-1. Double-click `fairshare/index.html` to open FairShare in any browser.
+1. Double-click `index.html` to open FairShare in any browser.
 2. In the **"Import Messages & Bank Alerts"** card:
-   - Click the **"Load Sample Mixed Paste"** button (or paste your own raw text lines).
+   - Click the **"Load Sample Mixed Paste"** button (or paste your own raw text lines from `sample_alerts.txt`).
    - Click **"Parse & Preview"**.
 3. Inspect the live preview:
    - **Summary Badges:** Shows total valid expenses (e.g., `6 expenses`) and combined dollar total (e.g., `$1,408.30`).
@@ -34,7 +57,7 @@ FairShare is built in plain HTML, CSS, and modern vanilla JavaScript. No package
 
 ---
 
-## 2. What Works
+## 3. What Works
 
 1. **Three Core Bank Alert Formats Supported:**
    - **Format A (Purchase at merchant on card ending XXXX):**  
@@ -66,7 +89,7 @@ FairShare is built in plain HTML, CSS, and modern vanilla JavaScript. No package
 
 ---
 
-## 3. What Does Not Work Yet (Honest Limitations)
+## 4. What Does Not Work Yet (Honest Limitations)
 
 1. **Foreign Currencies:** The importer currently assumes USD currency symbol (`$`) or standard dollar formats. Currency symbols like `€`, `£`, or `¥` are not yet supported and will be routed to "Needs review".
 2. **Refunds & Chargebacks:** Negative credit transactions (e.g., `"SCCU ALERT: Refund of $25.00 from REI"`) are not yet converted into ledger credits; they currently flag under "Needs review" to prevent erroneous debit entries.
@@ -74,7 +97,7 @@ FairShare is built in plain HTML, CSS, and modern vanilla JavaScript. No package
 
 ---
 
-## 4. Honest AI-Use Notes
+## 5. Honest AI-Use Notes
 
 - **AI Tools Used:** Google Antigravity 2.0 (Claude 3.7 Sonnet / Gemini 2.5 Pro agents).
 - **Process Followed (Session 2 Discipline):**
@@ -88,9 +111,11 @@ FairShare is built in plain HTML, CSS, and modern vanilla JavaScript. No package
   - *Awkward Case with Balance:* In Format C alerts, the bank message contained two amounts (`$18` purchase and `$2,340.12` available balance). An early naive regex matching `\$[0-9.]+` captured the available balance instead of the purchase amount. Writing the explicit specification in `examples/card_alerts.md` and writing the failing test first immediately caught this, prompting a targeted regex that extracts the dollar amount specifically following `"You spent"`.
   - *Unknown Card Naming Requirement:* The assignment requires the review reason to explicitly name the card (`"card 7777 is not on the card list"`). The test verified this exact string requirement, ensuring clear feedback for the treasurer.
 
+For the full detailed prompt trajectory, see [`PROMPTS.md`](./PROMPTS.md).
+
 ---
 
-## 5. Deliverables Checklist
+## 6. Deliverables Checklist
 
 - [x] `fairshare/`: Complete runnable project (`index.html`, `importer.js`, `tests.js`, `tests.html`, `money.js`, `app.js`, `style.css`, `AGENTS.md`, `examples/`).
 - [x] `fairshare/examples/card_alerts.md`: 7 examples covering 3 formats and awkward cases.
@@ -101,3 +126,5 @@ FairShare is built in plain HTML, CSS, and modern vanilla JavaScript. No package
 - [x] `memory_check.md`: Verification of new rule execution in a fresh conversation.
 - [x] `git_log.txt`: Output of `git log --oneline` with 5 clear commits telling the project story.
 - [x] `README.md`: Student documentation, instructions, feature audit, and AI-use notes.
+- [x] `USER_GUIDE.md`: Step-by-step user guide and feature walkthrough.
+- [x] `PROMPTS.md`: Complete catalog of prompts used during development.
