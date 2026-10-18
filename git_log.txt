@@ -1,3 +1,5 @@
+2d115d0 docs: add comprehensive project README
+34f97e2 chore: record git log history
 7eaa74b docs: update AGENTS.md with card-alert rules and add preview artifacts
 799d641 feat: implement card alert importer and pass all 22 tests (tests green)
 10c556e test: add card alert specification and failing tests (tests red)
