@@ -1,3 +1,5 @@
+67703ce docs: add PROMPTS.md, USER_GUIDE.md, and update README.md with screenshots
+754aa3c chore: sync final git log
 2d115d0 docs: add comprehensive project README
 34f97e2 chore: record git log history
 7eaa74b docs: update AGENTS.md with card-alert rules and add preview artifacts
