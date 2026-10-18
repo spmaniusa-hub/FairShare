@@ -180,6 +180,6 @@ git add git_log.txt
 git commit -m "chore: record git log history"
 
 # Package into required submission zip format
-zip -r subramanian_s2_hw1.zip subramanian_s2_hw1/
-unzip -l subramanian_s2_hw1.zip
+zip -r subramanian_s2_hw2.zip subramanian_s2_hw2/
+unzip -l subramanian_s2_hw2.zip
 ```

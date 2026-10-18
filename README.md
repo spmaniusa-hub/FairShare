@@ -3,7 +3,7 @@
 **Author:** Mani Subramanian  
 **Course:** Vibe Coding Workshop · Day 2: Core Prompting Concepts & Tools  
 **Assignment:** Session 2 Homework — The Treasurer's Inbox: Bank Alert Import  
-**Submission Package:** `subramanian_s2_hw1.zip`  
+**Submission Package:** `subramanian_s2_hw2.zip`  
 **Quick Links:** [User Guide & Walkthrough](./USER_GUIDE.md) | [Prompts Log](./PROMPTS.md) | [Automated Tests](./tests.html)
 
 ---
