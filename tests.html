@@ -343,7 +343,7 @@
         summaryText.innerHTML = `&check; All ${passedTests} Tests Passed! ($100 split 3 ways adds up to exactly $100.00)`;
       } else {
         statusBanner.className = 'status-banner has-fail';
-        summaryText.textContent = `&cross; ${failedTests} of ${totalTests} Tests Failed`;
+        summaryText.innerHTML = `✕ ${failedTests} of ${totalTests} Tests Failed`;
       }
     }
 
