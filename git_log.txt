@@ -1,0 +1,5 @@
+7eaa74b docs: update AGENTS.md with card-alert rules and add preview artifacts
+799d641 feat: implement card alert importer and pass all 22 tests (tests green)
+10c556e test: add card alert specification and failing tests (tests red)
+2ab1c7d chore: baseline checkpoint 2 with 15 passing tests
+0f7b6aa Initial commit
