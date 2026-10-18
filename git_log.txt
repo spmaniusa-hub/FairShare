@@ -1,3 +1,5 @@
+83aece3 docs: update submission package name to subramanian_s2_hw2
+a8294fc chore: update git_log.txt with docs commit
 67703ce docs: add PROMPTS.md, USER_GUIDE.md, and update README.md with screenshots
 754aa3c chore: sync final git log
 2d115d0 docs: add comprehensive project README
