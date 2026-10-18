@@ -735,8 +735,183 @@ select:focus {
     align-items: flex-start;
   }
 
-  .header-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
 }
+
+/* --------------------------------------------------------------------------
+   Card Directory & SMS / Bank Alert Import Styles
+   -------------------------------------------------------------------------- */
+.card-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.card-dir-item {
+  background: var(--bg-page);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-dir-item code {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.import-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.5;
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-md);
+  resize: vertical;
+  background-color: #fafbfc;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.import-textarea:focus {
+  border-color: var(--primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
+}
+
+.import-actions-bar {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.import-preview-box {
+  margin-top: 22px;
+  padding: 18px 20px;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-md);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.preview-stats {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.stat-badge {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.count-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.total-badge {
+  background: var(--credit-bg);
+  color: var(--credit-text);
+  border: 1px solid var(--credit-border);
+  font-family: var(--font-mono);
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.preview-table th, .preview-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.preview-table th {
+  background: #f1f5f9;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.needs-review-container {
+  background: #fef2f2;
+  border: 1.5px solid var(--fail-border, #fca5a5);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.needs-review-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.needs-review-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.needs-review-item {
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.needs-review-raw {
+  font-family: var(--font-mono);
+  color: #1e293b;
+  word-break: break-all;
+}
+
+.needs-review-reason {
+  color: #b91c1c;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.preview-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+

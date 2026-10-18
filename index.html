@@ -61,6 +61,67 @@
       </div>
     </section>
 
+    <!-- Card Directory (Linda, Dave, Carol, Ray) -->
+    <section class="card" aria-labelledby="card-directory-heading">
+      <div class="card-title">
+        <h2 id="card-directory-heading" style="font-size: 22px; font-weight: 700;">Club Card Directory</h2>
+        <span class="card-subtitle">Links card last 4 digits to club members</span>
+      </div>
+      <div class="card-directory-grid" id="card-directory-list">
+        <div class="card-dir-item"><span>Linda</span><code>x2208</code></div>
+        <div class="card-dir-item"><span>Dave</span><code>x4417</code></div>
+        <div class="card-dir-item"><span>Carol</span><code>x9031</code></div>
+        <div class="card-dir-item"><span>Ray</span><code>x5150</code></div>
+      </div>
+    </section>
+
+    <!-- Bank Alert & Text Message Import Box -->
+    <section class="card import-card" aria-labelledby="import-heading">
+      <div class="card-title">
+        <h2 id="import-heading" style="font-size: 22px; font-weight: 700;">Import Messages &amp; Bank Alerts</h2>
+        <span class="card-subtitle">Paste casual messages or Switchback CU card alerts</span>
+      </div>
+
+      <div class="form-group" style="margin-top: 10px;">
+        <label for="import-textarea">Paste text messages and card alerts here (one per line):</label>
+        <textarea id="import-textarea" rows="7" class="import-textarea" placeholder="Switchback CU: Purchase of $45.50 at SUMMIT FUEL #12 on card ending 4417.&#10;SCCU ALERT - Card x2208 charged $1,200.00 - BEAR HOLLOW CABINS&#10;Switchback Credit Union: You spent $18 at TRAILHEAD PARKING with card 9031. Available balance: $2,340.12&#10;Can someone pick up ice?"></textarea>
+      </div>
+
+      <div class="import-actions-bar">
+        <button type="button" class="btn-primary" id="btn-parse-import">Parse &amp; Preview</button>
+        <button type="button" class="btn-secondary" id="btn-load-sample">Load Sample Mixed Paste</button>
+        <button type="button" class="btn-clear" id="btn-clear-import">Clear Box</button>
+      </div>
+
+      <!-- Live Preview Area -->
+      <div id="import-preview-section" class="import-preview-box" style="display: none;">
+        <div class="preview-header">
+          <h3 style="font-size: 20px; font-weight: 700;">Import Preview</h3>
+          <div class="preview-stats">
+            <span class="stat-badge count-badge" id="preview-count">0 expenses</span>
+            <span class="stat-badge total-badge" id="preview-total">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Valid items table -->
+        <div class="preview-items-list" id="preview-items-container"></div>
+
+        <!-- Needs Review Box -->
+        <div class="needs-review-container" id="needs-review-container" style="display: none;">
+          <div class="needs-review-header">
+            <span style="font-size: 20px;">⚠️</span>
+            <h4 style="font-size: 18px; font-weight: 700; color: #991b1b;">Needs Review (<span id="needs-review-count">0</span>)</h4>
+            <span style="font-size: 15px; color: #7f1d1d; margin-left: 8px;">(These lines will NOT be imported until corrected)</span>
+          </div>
+          <ul class="needs-review-list" id="needs-review-list"></ul>
+        </div>
+
+        <div class="preview-actions">
+          <button type="button" class="btn-primary" id="btn-confirm-import">Add <span id="confirm-import-count">0</span> Expenses to Ledger</button>
+        </div>
+      </div>
+    </section>
+
     <!-- Add Expense Form -->
     <section class="card" aria-labelledby="add-expense-heading">
       <div class="card-title">
@@ -171,6 +232,7 @@
 
   <!-- Scripts -->
   <script src="money.js"></script>
+  <script src="importer.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

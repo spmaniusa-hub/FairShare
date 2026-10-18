@@ -359,7 +359,163 @@
       .replace(/'/g, '&#39;');
   }
 
+  // --- BATCH IMPORTER CONTROLLER ---
+  const importTextarea = document.getElementById('import-textarea');
+  const btnParseImport = document.getElementById('btn-parse-import');
+  const btnLoadSample = document.getElementById('btn-load-sample');
+  const btnClearImport = document.getElementById('btn-clear-import');
+  const importPreviewSection = document.getElementById('import-preview-section');
+  const previewCount = document.getElementById('preview-count');
+  const previewTotal = document.getElementById('preview-total');
+  const previewItemsContainer = document.getElementById('preview-items-container');
+  const needsReviewContainer = document.getElementById('needs-review-container');
+  const needsReviewCount = document.getElementById('needs-review-count');
+  const needsReviewList = document.getElementById('needs-review-list');
+  const btnConfirmImport = document.getElementById('btn-confirm-import');
+  const confirmImportCount = document.getElementById('confirm-import-count');
+
+  let currentParsedBatch = null;
+
+  const SAMPLE_LINES = [
+    'Dave paid $45.50 for gas',
+    'Switchback CU: Purchase of $45.50 at SUMMIT FUEL #12 on card ending 4417.',
+    'SCCU ALERT - Card x2208 charged $1,200.00 - BEAR HOLLOW CABINS',
+    'Switchback Credit Union: You spent $18 at TRAILHEAD PARKING with card 9031. Available balance: $2,340.12',
+    'Switchback CU: Purchase of $64.30 at RIDGE CAMPGROUND on card ending 5150.',
+    'Fwd: SCCU ALERT - Card x5150 charged $35.00 - PINECREST MARKET',
+    'Switchback CU: Purchase of $14.25 at MOUNTAIN BAKERY on card ending 7777.',
+    'SCCU ALERT - Declined: Card x2208 attempted $65.00 at ALPINE GEAR',
+    'Can someone pick up ice?'
+  ].join('\n');
+
+  function handleParseImport() {
+    if (!importTextarea) return;
+    const text = importTextarea.value.trim();
+    if (!text) {
+      if (importPreviewSection) importPreviewSection.style.display = 'none';
+      return;
+    }
+
+    if (typeof FairShareImporter === 'undefined') {
+      console.error('FairShareImporter is not loaded');
+      return;
+    }
+
+    const batch = FairShareImporter.parseMessages(text);
+    currentParsedBatch = batch;
+
+    if (importPreviewSection) importPreviewSection.style.display = 'block';
+
+    if (previewCount) {
+      previewCount.textContent = `${batch.count} expense${batch.count === 1 ? '' : 's'}`;
+    }
+    if (previewTotal) {
+      previewTotal.textContent = MoneyMath.centsToDollars(batch.totalCents);
+    }
+    if (confirmImportCount) {
+      confirmImportCount.textContent = batch.count;
+    }
+
+    // Render Preview Items Table
+    if (previewItemsContainer) {
+      if (batch.items.length === 0) {
+        previewItemsContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 16px; padding: 10px 0;">No valid expenses ready to import.</p>';
+      } else {
+        let tableHtml = `
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th>Payer</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Source / Card</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        batch.items.forEach(item => {
+          tableHtml += `
+            <tr>
+              <td><strong>${escapeHtml(item.paidBy)}</strong></td>
+              <td style="font-family: var(--font-mono); font-weight: 700; color: var(--credit-text);">${MoneyMath.centsToDollars(item.cents)}</td>
+              <td>${escapeHtml(item.desc)}</td>
+              <td style="font-size: 14px; color: var(--text-muted); font-family: var(--font-mono);">${item.card ? 'Card x' + escapeHtml(item.card) : 'Text Msg'}</td>
+            </tr>
+          `;
+        });
+        tableHtml += `</tbody></table>`;
+        previewItemsContainer.innerHTML = tableHtml;
+      }
+    }
+
+    // Render Needs Review
+    if (needsReviewContainer && needsReviewList && needsReviewCount) {
+      if (batch.needsReview.length > 0) {
+        needsReviewContainer.style.display = 'block';
+        needsReviewCount.textContent = batch.needsReview.length;
+        needsReviewList.innerHTML = '';
+        batch.needsReview.forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'needs-review-item';
+          li.innerHTML = `
+            <div class="needs-review-raw">"${escapeHtml(item.raw)}"</div>
+            <div class="needs-review-reason">⚠ Reason: ${escapeHtml(item.reason)}</div>
+          `;
+          needsReviewList.appendChild(li);
+        });
+      } else {
+        needsReviewContainer.style.display = 'none';
+      }
+    }
+  }
+
+  function handleConfirmImport() {
+    if (!currentParsedBatch || currentParsedBatch.items.length === 0) return;
+
+    currentParsedBatch.items.forEach(item => {
+      expenses.push({
+        id: 'imported-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+        what: item.desc || 'Expense',
+        amountCents: item.cents,
+        paidBy: item.paidBy,
+        timestamp: Date.now()
+      });
+    });
+
+    saveExpenses();
+    render();
+
+    if (importTextarea) importTextarea.value = '';
+    if (importPreviewSection) importPreviewSection.style.display = 'none';
+    currentParsedBatch = null;
+  }
+
   // --- EVENT LISTENERS ---
+
+  if (btnParseImport) {
+    btnParseImport.addEventListener('click', handleParseImport);
+  }
+
+  if (btnLoadSample) {
+    btnLoadSample.addEventListener('click', function () {
+      if (importTextarea) {
+        importTextarea.value = SAMPLE_LINES;
+        handleParseImport();
+      }
+    });
+  }
+
+  if (btnClearImport) {
+    btnClearImport.addEventListener('click', function () {
+      if (importTextarea) importTextarea.value = '';
+      if (importPreviewSection) importPreviewSection.style.display = 'none';
+      currentParsedBatch = null;
+    });
+  }
+
+  if (btnConfirmImport) {
+    btnConfirmImport.addEventListener('click', handleConfirmImport);
+  }
 
   // Form submit
   expenseForm.addEventListener('submit', function (e) {
@@ -393,6 +549,14 @@
       handleAddExpense(what, amount, paidBy);
     });
   });
+
+  // Auto-load sample if sample=true in query string (useful for demo & automated verification)
+  if (window.location.search.includes('sample=true')) {
+    if (importTextarea) {
+      importTextarea.value = SAMPLE_LINES;
+      handleParseImport();
+    }
+  }
 
   // Initial render on load
   document.addEventListener('DOMContentLoaded', render);
